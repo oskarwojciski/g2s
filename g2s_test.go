@@ -65,6 +65,34 @@ func TestPrefixedTiming(t *testing.T) {
 	}
 }
 
+func Test_TimingInt(t *testing.T) {
+	b := &bytes.Buffer{}
+	s, err := New(b, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	s.TimingInt(1.0, "gstrop", 330)
+
+	if expected, got := "gstrop:330|ms", b.String(); expected != got {
+		t.Errorf("expected %q, got %q", expected, got)
+	}
+}
+
+func TestPrefixedTimingInt(t *testing.T) {
+	b := &bytes.Buffer{}
+	s, err := New(b, "derserk")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	s.TimingInt(1.0, "gstrop", 330)
+
+	if expected, got := "derserk.gstrop:330|ms", b.String(); expected != got {
+		t.Errorf("expected %q, got %q", expected, got)
+	}
+}
+
 func TestGauge(t *testing.T) {
 	b := &bytes.Buffer{}
 	s, err := New(b, "")

@@ -16,6 +16,7 @@ const maxPacketSize = 65536 - 8 - 20 // 8-byte UDP header, 20-byte IP header
 type Statter interface {
 	Counter(sampleRate float32, bucket string, n ...int)
 	Timing(sampleRate float32, bucket string, d ...time.Duration)
+	TimingInt(sampleRate float32, bucket string, d ...int64)
 	Gauge(sampleRate float32, bucket string, value ...string)
 }
 
@@ -172,6 +173,21 @@ func (s *Statsd) Timing(sampleRate float32, bucket string, d ...time.Duration) {
 	}
 
 	s.publish(msgs)
+}
+
+// TimingInt sends one or more int values as timing statistics to StatsD.
+//
+// Application code should call it for every potential invocation of a
+// statistic; it uses the sampleRate to determine whether or not to send or
+// squelch the data, on an aggregate basis.
+func (s *Statsd) TimingInt(sampleRate float32, bucket string, i ...int64) {
+	d := make([]time.Duration, len(i))
+	for k, val := range i {
+		d[k] = time.Duration(val * 1e6)
+	}
+
+	s.Timing(sampleRate, bucket, d...)
+
 }
 
 // Gauge sends one or more gauge statistics to Statsd.

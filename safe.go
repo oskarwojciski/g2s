@@ -8,6 +8,7 @@ type noStatsd struct{}
 
 func (n noStatsd) Counter(float32, string, ...int)          {}
 func (n noStatsd) Timing(float32, string, ...time.Duration) {}
+func (n noStatsd) TimingInt(float32, string, ...int64)      {}
 func (n noStatsd) Gauge(float32, string, ...string)         {}
 
 // Noop returns a struct that satisfies the Statter interface but silently
